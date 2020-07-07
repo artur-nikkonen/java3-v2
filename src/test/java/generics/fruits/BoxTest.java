@@ -96,7 +96,7 @@ class BoxTest {
         box2.addFruit(new Apple());
         box2.addFruit(new Apple());
 
-        box1.pourAllFruits(box2);
+        box1.putAllFruits(box2);
 
         assertEquals(box1.getFruitsCount(),5);
         assertEquals(box2.getFruitsCount(),0);
@@ -112,7 +112,7 @@ class BoxTest {
         box1.addFruit(new Apple());
         box1.addFruit(new Apple());
 
-        box1.pourAllFruits(null);
+        box1.putAllFruits(null);
 
         assertEquals(box1.getFruitsCount(),3);
     }

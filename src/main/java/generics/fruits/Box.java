@@ -42,7 +42,7 @@ public class Box<T extends Fruit & IPackable> {
         list.addAll(fruits);
     }
 
-    public void pourAllFruits(Box<T> box) {
+    public void putAllFruits(Box<T> box) {
         if(box == null) return;
         addAllFruits(box.takeAwayFruits());
     }
