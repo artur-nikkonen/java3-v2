@@ -29,11 +29,12 @@ public class Client extends BaseSocketApp {
                 Thread.sleep(100);
             }
 
+            System.out.println("Сеанс завершен");
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
             tryCloseAll();
-            System.out.println("Сеанс завершен");
         }
     }
 }
