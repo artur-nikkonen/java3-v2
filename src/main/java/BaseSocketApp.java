@@ -9,7 +9,7 @@ public class BaseSocketApp {
     protected Socket socket = null;
     protected BufferedReader consoleReader;
     protected BufferedReader inputReader = null;
-    protected BufferedWriter outputStream = null;
+    protected BufferedWriter outputWriter = null;
 
     private String instanceName;
 
@@ -21,7 +21,7 @@ public class BaseSocketApp {
     protected void init(Socket socket) throws IOException {
         this.socket = socket;
         inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        outputStream = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        outputWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
     protected Message getInputMessage() throws IOException {
@@ -36,9 +36,9 @@ public class BaseSocketApp {
         if (consoleReader.ready()) {
             String message = consoleReader.readLine();
 
-            outputStream.write(message);
-            outputStream.newLine();
-            outputStream.flush();
+            outputWriter.write(message);
+            outputWriter.newLine();
+            outputWriter.flush();
 
             return new Message(instanceName, EMessageType.output, message);
         } else {
@@ -75,7 +75,7 @@ public class BaseSocketApp {
 
     private void tryCloseInputReader() {
         try {
-            outputStream.close();
+            outputWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
