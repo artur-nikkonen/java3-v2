@@ -42,10 +42,12 @@ public class Server extends BaseSocketApp {
                 System.out.println("Последние 10 записей в базе:");
                 db.printLast10Records();
 
+                db.tryCloseAllSources();
+
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                tryCloseAll();
+                tryCloseAllSources();
             }
         }
     }

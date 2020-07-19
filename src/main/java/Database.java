@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.UUID;
 
 public class Database {
 
@@ -12,6 +13,7 @@ public class Database {
 
     PreparedStatement insertMessage;
     private Connection connection;
+    private String sessionId;
 
     public Database(String filename) throws SQLException {
 
@@ -20,6 +22,7 @@ public class Database {
         Statement statement = connection.createStatement();
         String sql = "CREATE TABLE IF NOT EXISTS chat (\n" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "sessionId TEXT NOT NULL,\n" +
                 "instanceName TEXT NOT NULL,\n" +
                 "messageType TEXT NOT NULL,\n" +
                 "message TEXT NOT NULL,\n" +
@@ -27,15 +30,19 @@ public class Database {
                 ");";
         statement.executeUpdate(sql);
 
-        insertMessage = connection.prepareStatement("INSERT INTO chat (instanceName, messageType, message, date) VALUES (?,?,?,?)");
+        insertMessage = connection.prepareStatement(
+                "INSERT INTO chat (sessionId, instanceName, messageType, message, date) VALUES (?,?,?,?,?)");
+
+        this.sessionId = UUID.randomUUID().toString();
     }
 
     public void saveMessage(Message message) {
         try {
-            insertMessage.setString(1, message.getInstanceName());
-            insertMessage.setString(2, message.getMessageType().toString());
-            insertMessage.setString(3, message.getText());
-            insertMessage.setString(4, message.getFormattedStringDate());
+            insertMessage.setString(1, sessionId);
+            insertMessage.setString(2, message.getInstanceName());
+            insertMessage.setString(3, message.getMessageType().toString());
+            insertMessage.setString(4, message.getText());
+            insertMessage.setString(5, message.getFormattedStringDate());
             insertMessage.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,11 +55,12 @@ public class Database {
             String sql = "SELECT * FROM (SELECT * FROM chat ORDER BY id DESC LIMIT 10) ORDER BY id;";
             ResultSet resultSet = statement.executeQuery(sql);
 
-            System.out.println("Id | Instance name | Message type | Message | Date |");
+            System.out.println("Id | Session id | Instance name | Message type | Message | Date |");
             System.out.println("----------------------------------------------------");
 
             while (resultSet.next()) {
                 String line = resultSet.getInt("id") + " | " +
+                        resultSet.getString("sessionId") + " | " +
                         resultSet.getString("instanceName") + " | " +
                         resultSet.getString("messageType") + " | " +
                         resultSet.getString("message") + " | " +
@@ -60,6 +68,27 @@ public class Database {
                 System.out.println(line);
             }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void tryCloseAllSources(){
+        tryCloseInsertMessage();
+        tryCloseConnection();
+    }
+
+    private void tryCloseInsertMessage() {
+        try {
+            insertMessage.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void tryCloseConnection() {
+        try {
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

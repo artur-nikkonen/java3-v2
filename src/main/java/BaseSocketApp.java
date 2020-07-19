@@ -59,7 +59,7 @@ public class BaseSocketApp {
         return message.getText().equalsIgnoreCase(QUIT_MESSAGE);
     }
 
-    protected void tryCloseAll() {
+    protected void tryCloseAllSources() {
         tryCloseInputReader();
         tryCloseOutputWriter();
         tryCloseSocket();

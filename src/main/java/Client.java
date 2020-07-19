@@ -34,7 +34,7 @@ public class Client extends BaseSocketApp {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            tryCloseAll();
+            tryCloseAllSources();
         }
     }
 }
