@@ -25,4 +25,11 @@ public class Main {
 
         return stream.sorted(comparator1).collect(Collectors.toList());
     }
+
+    public static List<Integer> Test2(Stream<Integer> stream) {
+        //не понимаю, как скомбинировать компаратор
+        //компилятор ругается на типы, но я не понимаю, как это исправить
+        Comparator<Integer> comparator1 = Comparator.<Integer, Integer>comparing(x -> x).reversed().thenComparing(x -> x);
+
+    }
 }
