@@ -13,14 +13,15 @@ public class Main {
 
         Comparator<Integer> comparator1 = Comparator.comparing(x -> x);
         comparator1 = comparator1.reversed();
-        comparator1 = comparator1.thenComparing(x->x);
+        comparator1 = comparator1.thenComparing(x -> x);
 
         return stream.sorted(comparator1).collect(Collectors.toList());
     }
+
     public static List<Integer> Test2(Stream<Integer> stream) {
         //не понимаю, как скомбинировать компаратор
-        //компилятьр ругается на ттипы, но я не понимаю, как это исправить
-        Comparator<Integer> comparator1 = Comparator.comparing(x -> x).reversed().thenComparing(x->x);
+        //компилятор ругается на типы, но я не понимаю, как это исправить
+        Comparator<Integer> comparator1 = Comparator.comparing(x -> x).reversed().thenComparing(x -> x);
 
         return stream.sorted(comparator1).collect(Collectors.toList());
     }
