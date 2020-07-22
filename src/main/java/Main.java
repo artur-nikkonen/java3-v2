@@ -1,30 +1,31 @@
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        Test();
+
+        //создаем тестовых студентов
         List<IStudent> testStudents = createTestStudents();
 
         //Получаем список курсов
-        List<ICourse> uniqueCourses = getUniqueCourses(testStudents);
-        uniqueCourses.forEach(x -> System.out.println(x.getName()));
+        List<String> uniqueCourses = getUniqueCourses(testStudents);
+        System.out.println("Список куров:");
+        uniqueCourses.forEach(System.out::println);
         System.out.println();
 
         //Получаем любознательных студентов
-        List<IStudent> mostCuriousStudents = get3MostCuriousStudents(testStudents);
-        mostCuriousStudents.forEach(student -> System.out.println(student.getName() +
-                " [" + getCoursesDescription(student) + "]"));
+        List<IStudent> mostCuriousStudents = getMostCuriousStudents(testStudents, 3);
+        System.out.println("Список любознательных студентов:");
+        mostCuriousStudents.forEach(student -> System.out.println(student.getName() + " [" + getCoursesDescription(student) + "]"));
         System.out.println();
 
         //Получаем список студентов, посещающих курс
-        ICourse course = new Course("Course 08");
-        List<IStudent> studentsOfCourse = getStudentsOfCourse(testStudents, course);
+        String courseName = "Course 08";
+        System.out.println("Список студентов курса '" + courseName + "':");
+        List<IStudent> studentsOfCourse = getStudentsOfCourse(testStudents, courseName);
         studentsOfCourse.forEach(student -> System.out.println(student.getName() +
                 " [courses: " + getCoursesNamesString(student) + "]"));
     }
@@ -50,47 +51,41 @@ public class Main {
         return students;
     }
 
-    public static List<ICourse> getUniqueCourses(List<IStudent> students) {
+    public static List<String> getUniqueCourses(List<IStudent> students) {
 
         return students.stream()
                 .filter(Objects::nonNull)
                 .filter(student -> student.getAllCourses() != null)
                 .flatMap(student -> student.getAllCourses().stream())
                 .filter(Objects::nonNull)
-                .collect(Collectors.toMap(ICourse::getName, course -> course, (course1, course2) -> course1))
-                .values().stream()
-                .sorted(Comparator.comparing(ICourse::getName))
+                .map(ICourse::getName)
+                .distinct()
+                .sorted(String::compareTo)
                 .collect(Collectors.toList());
     }
 
-    static List<IStudent> get3MostCuriousStudents(List<IStudent> students) {
-
-
-        //сравннение студетнов по количеству not null курсов, по убыванию
-        Comparator<IStudent> comparator = Comparator.comparingInt(student -> {
-            if (student.getAllCourses() == null) return -1;
-            return (int)student.getAllCourses().stream().filter(Objects::nonNull).count();
-        }).reversed();
-
-        //затем, по имени
-        comparator = comparator.thenComparing(IStudent::getName);
-
+    static List<IStudent> getMostCuriousStudents(List<IStudent> students, int count) {
         return students.stream()
                 .filter(Objects::nonNull)
-                .sorted(comparator)
-                .limit(3)
+                //сортируем по количеству непустых курсов, а потом по имени
+                .sorted(Comparator.<IStudent, Integer>comparing(student -> {
+                            List<ICourse> allCourses = student.getAllCourses();
+                            if (allCourses == null) return 0;
+                            return (int) allCourses.stream().filter(Objects::nonNull).count();
+                        }
+                ).reversed().thenComparing(IStudent::getName))
+                .limit(count)
                 .collect(Collectors.toList());
     }
 
-    private static List<IStudent> getStudentsOfCourse(List<IStudent> students, ICourse course) {
+    private static List<IStudent> getStudentsOfCourse(List<IStudent> students, String courseName) {
         return students.stream()
                 .filter(Objects::nonNull)
                 .filter(student -> student.getAllCourses() != null)
                 .filter(student -> student.getAllCourses().stream()
                         .filter(Objects::nonNull)
-                        .anyMatch(c -> c.getName().equals(course.getName())))
+                        .anyMatch(course -> course.getName().equals(courseName)))
                 .collect(Collectors.toList());
-
     }
 
     //Вспомогательная функция. Возвращает статистику по курсам студента
@@ -110,8 +105,4 @@ public class Main {
                 .map(ICourse::getName)
                 .collect(Collectors.joining(", "));
     }
-
-
-
-
 }

@@ -6,11 +6,6 @@ public class Student implements IStudent {
     private String name;
     private List<ICourse> courses;
 
-    public Student(String name) {
-        this.name = name;
-        courses = new ArrayList<>();
-    }
-
     public Student(String name, List<ICourse> courses) {
         this.name = name;
         this.courses = courses;
