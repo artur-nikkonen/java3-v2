@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Student implements IStudent {
@@ -18,7 +17,6 @@ public class Student implements IStudent {
 
     @Override
     public List<ICourse> getAllCourses() {
-
         return courses;
     }
 }

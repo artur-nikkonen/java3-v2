@@ -1,4 +1,4 @@
-public class Course implements ICourse{
+public class Course implements ICourse {
     private String name;
 
     public Course(String name) {
