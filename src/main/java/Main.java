@@ -68,7 +68,7 @@ public class Main {
         return students.stream()
                 .filter(Objects::nonNull)
                 //сортируем по количеству непустых курсов, а потом по имени
-                .sorted(Comparator.<IStudent, Integer>comparing(student -> {
+                .sorted(Comparator.comparing((IStudent student) -> {
                             List<ICourse> allCourses = student.getAllCourses();
                             if (allCourses == null) return 0;
                             return (int) allCourses.stream().filter(Objects::nonNull).count();
