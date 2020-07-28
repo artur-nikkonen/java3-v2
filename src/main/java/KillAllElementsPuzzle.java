@@ -1,4 +1,5 @@
 import java.util.*;
+
 /**
  * https://habr.com/ru/company/jugru/blog/352438/
  * Java-паззлер №7: Неудержимые 2
